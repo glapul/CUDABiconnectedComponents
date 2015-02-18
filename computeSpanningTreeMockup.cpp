@@ -1,7 +1,4 @@
 #include "BiconnectedComponents.h"
-
-#define computeSpanningTreeMockup
-#ifdef computeSpanningTreeMockup
 #include<bits/stdc++.h>
 using namespace std;
 struct FindJoin {
@@ -18,18 +15,14 @@ struct FindJoin {
         parent[find(x)] = find(y);
     }
 };
-#endif
-
 void BiconnectedComponents::computeSpanningTree(
         const Graph & graph,
         device_vector<bool> & inSpanningTree) const {
 
-
-#ifdef computeSpanningTreeMockup
-    int n = graph.vertexCount;
-    FindJoin fu = FindJoin(n);
+    FindJoin fu = FindJoin(graph.vertexCount);
     host_vector<Edge> host_edges = graph.edges;
     host_vector<bool> host_inSpanningTree = inSpanningTree;
+
     for(int i = 0; i < host_edges.size(); i++) {
         if(fu.find(host_edges[i].from) != fu.find(host_edges[i].to)) {
             fu.join(host_edges[i].from, host_edges[i].to);
@@ -37,6 +30,4 @@ void BiconnectedComponents::computeSpanningTree(
         }
     }
     inSpanningTree = host_inSpanningTree;
-#endif
-
 }
