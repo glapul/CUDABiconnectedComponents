@@ -11,6 +11,12 @@
 #include "computeSpanningTree.cpp"
 #endif
 
+#define computeConnectedComponentsMockup
+#ifdef computeSpanningTreeMockup
+#include "computeConnectedComponentsMockup.cpp"
+#else
+#include "computeConnectedComponents.cpp"
+#endif
 int main() {
 	return 0;
 }
