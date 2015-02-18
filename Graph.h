@@ -5,12 +5,13 @@
 #include <thrust/device_vector.h>
 
 struct Edge {
-	int u, v;
+	int from, to;
 	int rev;
 };
 
 struct Graph {
-	Graph(int vertexCount) : vertexCount(vertexCount) {}
+	Graph(int vertexCount)
+        : vertexCount(vertexCount) {}
 
 	int vertexCount;
 	thrust::device_vector<Edge> edges;
