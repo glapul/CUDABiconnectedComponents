@@ -1,10 +1,10 @@
 #include "Graph.h"
 #include "BiconnectedComponents.h"
 
+#include "constructorAndDestructor.cpp"
 
 //Mockup - wylaczyc
 #define computeSpanningTreeMockup
-
 #ifdef computeSpanningTreeMockup
 #include "computeSpanningTreeMockup.cpp"
 #else

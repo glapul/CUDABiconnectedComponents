@@ -12,6 +12,10 @@ struct Edge {
 struct Graph {
 	Graph(int vertexCount)
         : vertexCount(vertexCount) {}
+    Graph(int vertexCount, host_vector<Edge> _edges)
+        : vertexCount(vertexCount) {
+        edges = _edges;
+    }
 
 	int vertexCount;
 	thrust::device_vector<Edge> edges;

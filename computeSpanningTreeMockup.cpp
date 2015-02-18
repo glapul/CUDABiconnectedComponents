@@ -15,6 +15,7 @@ struct FindJoin {
         parent[find(x)] = find(y);
     }
 };
+
 void BiconnectedComponents::computeSpanningTree(
         const Graph & graph,
         device_vector<bool> & inSpanningTree) const {
