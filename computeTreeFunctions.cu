@@ -1,10 +1,7 @@
-#include "BiconnectedComponents.h"
-
 const int BLOCK_SIZE = 32,
           INF = 1<<30;
 
 #define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
-
 
 __global__ void _kernel_extractEdges(
             Edge * edges,
