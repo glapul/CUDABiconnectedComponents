@@ -8,6 +8,9 @@
 struct Edge {
 	int from, to;
 	int rev;
+    Edge(){}
+    Edge(int from, int to, int rev)
+        :from(from), to(to), rev(rev){}
 };
 
 struct Graph {

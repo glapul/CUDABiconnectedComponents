@@ -1,10 +1,10 @@
 #include "BiconnectedComponents.h"
 using thrust::host_vector;
 using thrust::device_vector;
-const int BLOCK_SIZE = 32;
+const int BLOCK_SIZE = 1024,
+          INF        = 1 << 30; 
 
-#define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
-
+/* edge preprocessing */
 __global__ void _kernel_extractEdges(
             const Edge * edges,
             int * extractedEdges,
@@ -16,7 +16,7 @@ __global__ void _kernel_extractEdges(
         if(id >= num_of_edges)
             return;
         extractedEdges[id] = edges[id].to;
-        if (edges[id].from != edges[id + 1].from)
+        if (id < num_of_edges - 1 && edges[id].from != edges[id + 1].from)
             edgeListStart[edges[id + 1].from] = id + 1;
         if(id == num_of_edges - 1)
             edgeListStart[num_of_vertices] = num_of_edges;
@@ -42,6 +42,34 @@ void BiconnectedComponents::preprocessEdges(
             graph.vertexCount);
 
 }
+
+/* BFS */
+
+void BiconnectedComponents::BFS(
+        const Graph & graph,
+        const device_vector<int> & extractedEdges,
+        const device_vector<int> & edgeListStart,
+        device_vector<int> & parent,
+        device_vector<int> & distance) const {
+
+        parent = device_vector<int>(graph.vertexCount);
+        distance = device_vector<int>(graph.vertexCount, INF);
+        parent[0] = -1;
+        distance[0] = 0;
+
+        device_vector<bool> finished(1, false);
+
+        for(int curr = 0; !finished[0]; curr++)
+            _kernel_BFS<<<gridDim, blockDim>>>(
+                    pointer(extractedEdges),
+                    pointer(edgeListStart),
+                    pointer(parent),
+                    pointer(distance),
+                    graph.vertexCount,
+                    curr);
+
+}
+
 
 void BiconnectedComponents::computeTreeFunctions(
         const Graph & graph,

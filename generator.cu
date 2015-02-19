@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 #include "Graph.h"
-
+#include "helper.h"
 using namespace std;
 vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
     assert(m >= n - 1);
@@ -25,20 +25,22 @@ vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
     return undirected_edges;
 }
 
+#define FOREACH(i, c) for(__typeof((c).begin()) i = (c).begin(); i!=(c).end();i++)
+
 thrust::host_vector<Edge> direct_edges(vector<pair<int,int> > undirected_edges) {
 
-    auto directed = undirected_edges;
-    for(auto i : undirected_edges)
-        directed.push_back(make_pair(i.y, i.x));
+    vector<pair<int,int> > directed = undirected_edges;
+    FOREACH(i, undirected_edges)
+        directed.push_back(make_pair(i->second, i-> first));
     sort(directed.begin(), directed.end());
 
     map<pair<int,int>, int> where;
-    for(int i = 0; i < where.size(); i++)
+    for(int i = 0; i < directed.size(); i++)
         where[directed[i]] = i;
 
     thrust::host_vector<Edge> result;
-    for(auto i : directed)
-        result.push_back(Edge(i.x, i.y, where[make_pair(i.y, i.x)]));
+    FOREACH(i, directed)
+        result.push_back(Edge(i->first, i->second, where[make_pair(i->second, i->first)]));
     return result;
 }
 

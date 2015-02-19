@@ -1,6 +1,8 @@
 #include "Graph.h"
 #include "BiconnectedComponents.h"
 
+#include "helper.h"
+
 #include "computeTreeFunctions.cu"
 
 #define computeConnectedComponentsMockup
@@ -22,4 +24,7 @@ void BiconnectedComponents::createAuxiliaryGraph(
 		const device_vector<int>& high,
 		Graph& auxiliaryGraph,
 		device_vector<std::pair<int, int> >& mapping) const {}
+
+BiconnectedComponents::BiconnectedComponents(){}
+BiconnectedComponents::~BiconnectedComponents(){}
 
