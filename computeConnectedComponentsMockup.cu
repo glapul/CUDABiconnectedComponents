@@ -1,6 +1,5 @@
-
-#include "BiconnectedComponents.h"
 #include<bits/stdc++.h>
+#include "BiconnectedComponents.h"
 using namespace std;
 struct FindJoin {
     vector<int> parent;
@@ -16,16 +15,15 @@ struct FindJoin {
         parent[find(x)] = find(y);
     }
 };
-
-private void BiconnectedComponents::computeConnectedComponents(
+void BiconnectedComponents::computeConnectedComponents(
         const Graph & graph,
         device_vector<int> & components) const {
 
     FindJoin fu = FindJoin(graph.vertexCount);
-    host_vector<Edge> host_edges = graph.edges;
+    thrust::host_vector<Edge> host_edges = graph.edges;
 
     int sccs = graph.vertexCount;
-    host_vector<int> host_components = host_vector<int>(sccs);
+    thrust::host_vector<int> host_components = thrust::host_vector<int>(sccs);
 
     for(int i = 0; i < host_edges.size(); i++)
         if(fu.find(host_edges[i].from) != fu.find(host_edges[i].to)) {
@@ -33,7 +31,7 @@ private void BiconnectedComponents::computeConnectedComponents(
             sccs--;
         }
     int wsk = 0;
-    unordered_map<int,int> m;
+    map<int,int> m;
     for(int i = 0; i < graph.vertexCount; i++) {
         if(m.count(fu.find(i)) == 0)
             m[fu.find(i)] = wsk++;

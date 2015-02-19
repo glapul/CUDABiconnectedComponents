@@ -10,19 +10,16 @@
 #include "computeConnectedComponents.cu"
 #endif
 
-public void BiconnectedComponents::computeBiconnectedComponents(
+void BiconnectedComponents::computeBiconnectedComponents(
         const Graph & graph,
         device_vector<int> & components) const {}
 
-public void BiconnectedComponents::createAuxiliaryGraph(
+void BiconnectedComponents::createAuxiliaryGraph(
 		const Graph& graph,
 		const device_vector<int>& preorder,
 		const device_vector<int>& nd,
 		const device_vector<int>& low,
 		const device_vector<int>& high,
 		Graph& auxiliaryGraph,
-		device_vector<std::pair<int, int>>& mapping) const {}
+		device_vector<std::pair<int, int> >& mapping) const {}
 
-int main() {
-	return 0;
-}

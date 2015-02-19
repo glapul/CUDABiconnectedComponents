@@ -1,29 +1,28 @@
 #include "BiconnectedComponents.h"
-
-const int BLOCK_SIZE = 32,
-          INF = 1<<30;
+using thrust::host_vector;
+using thrust::device_vector;
+const int BLOCK_SIZE = 32;
 
 #define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
 
-
 __global__ void _kernel_extractEdges(
-            Edge * edges,
+            const Edge * edges,
             int * extractedEdges,
             int * edgeListStart,
             int num_of_edges,
             int num_of_vertices) {
 
-        int id = threadIdx + blockIdx * blockDim.x;
+        int id = threadIdx.x + blockIdx.x * blockDim.x;
         if(id >= num_of_edges)
             return;
         extractedEdges[id] = edges[id].to;
-        else if (edges[id].from != edges[id + 1].from)
+        if (edges[id].from != edges[id + 1].from)
             edgeListStart[edges[id + 1].from] = id + 1;
         if(id == num_of_edges - 1)
             edgeListStart[num_of_vertices] = num_of_edges;
 }
 
-private void BiconnectedComponents::preprocessEdges(
+void BiconnectedComponents::preprocessEdges(
         const Graph & graph,
         device_vector<int> & extractedEdges,
         device_vector<int> & edgeListStart) const {
@@ -35,7 +34,7 @@ private void BiconnectedComponents::preprocessEdges(
     dim3 gridDim(blocks);
     dim3 blockDim(BLOCK_SIZE);
 
-    _kernel_extractEdges<<<gridDim, blockDim>>(
+    _kernel_extractEdges<<<gridDim, blockDim>>>(
             pointer(graph.edges),
             pointer(extractedEdges),
             pointer(edgeListStart),
@@ -44,7 +43,7 @@ private void BiconnectedComponents::preprocessEdges(
 
 }
 
-public void BiconnectedComponents::computeTreeFunctions(
+void BiconnectedComponents::computeTreeFunctions(
         const Graph & graph,
         device_vector<int> & preorder,
         device_vector<int> & descendantsCount,
