@@ -24,7 +24,7 @@ public:
 		const device_vector<int>& low,
 		const device_vector<int>& high,
 		Graph& auxiliaryGraph,
-		device_vector<std::pair<int, int>>& mapping) const;
+		device_vector<std::pair<int, int> >& mapping) const;
 
 	void computeConnectedComponents(
 		const Graph& graph,
@@ -33,4 +33,9 @@ public:
 	void computeBiconnectedComponents(
 		const Graph& graph,
 		device_vector<int>& components) const;
+private:
+    void preprocessEdges(
+            const Graph & graph,
+            device_vector<int> & extractedEdges,
+            device_vector<int> & edgeListStart) const;
 };
