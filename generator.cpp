@@ -26,12 +26,19 @@ vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
 }
 
 thrust::host_vector<Edge> direct_edges(vector<pair<int,int> > undirected_edges) {
+
+    auto directed = undirected_edges;
+    for(auto i : undirected_edges)
+        directed.push_back(make_pair(i.y, i.x));
+    sort(directed.begin(), directed.end());
+
+    map<pair<int,int>, int> where;
+    for(int i = 0; i < where.size(); i++)
+        where[directed[i]] = i;
+
     thrust::host_vector<Edge> result;
-    for(int i = 0; i < undirected_edges.size(); i++) {
-        auto e = undirected_edges[i];
-        result.push_back(Edge(e.first, e.second, 2*i));
-        result.push_back(Edge(e.second, e.first, 2*i+1));
-    }
+    for(auto i : directed)
+        result.push_back(Edge(i.x, i.y, where[make_pair(i.y, i.x)]));
     return result;
 }
 

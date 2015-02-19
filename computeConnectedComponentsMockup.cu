@@ -1,3 +1,4 @@
+
 #include "BiconnectedComponents.h"
 #include<bits/stdc++.h>
 using namespace std;
@@ -16,19 +17,27 @@ struct FindJoin {
     }
 };
 
-void BiconnectedComponents::computeSpanningTree(
+private void BiconnectedComponents::computeConnectedComponents(
         const Graph & graph,
-        device_vector<bool> & inSpanningTree) const {
+        device_vector<int> & components) const {
 
     FindJoin fu = FindJoin(graph.vertexCount);
     host_vector<Edge> host_edges = graph.edges;
-    host_vector<bool> host_inSpanningTree = inSpanningTree;
 
-    for(int i = 0; i < host_edges.size(); i++) {
+    int sccs = graph.vertexCount;
+    host_vector<int> host_components = host_vector<int>(sccs);
+
+    for(int i = 0; i < host_edges.size(); i++)
         if(fu.find(host_edges[i].from) != fu.find(host_edges[i].to)) {
             fu.join(host_edges[i].from, host_edges[i].to);
-            host_inSpanningTree[i] = host_inSpanningTree[host_edges[i].rev] = true;
+            sccs--;
         }
+    int wsk = 0;
+    unordered_map<int,int> m;
+    for(int i = 0; i < graph.vertexCount; i++) {
+        if(m.count(fu.find(i)) == 0)
+            m[fu.find(i)] = wsk++;
+        host_components[i] = m[fu.find(i)];
     }
-    inSpanningTree = host_inSpanningTree;
+    components = host_components;
 }
