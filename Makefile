@@ -1,4 +1,4 @@
 NVCC := /usr/local/cuda/bin/nvcc
 
 class: 
-	$(NVCC) -arch=sm_20 BiconnectedComponents.cu computeConnectedComponentsMockup.cu computeTreeFunctions.cu
+	$(NVCC) -arch=sm_20 BiconnectedComponents.cu -o class

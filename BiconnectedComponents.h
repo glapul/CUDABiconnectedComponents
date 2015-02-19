@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef BICONNNECTED_COMPONENTS_H
+#define BICONNNECTED_COMPONENTS_H
 #include "Graph.h"
 
 using thrust::device_vector;
@@ -39,3 +39,4 @@ private:
             device_vector<int> & extractedEdges,
             device_vector<int> & edgeListStart) const;
 };
+#endif

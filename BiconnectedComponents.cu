@@ -23,6 +23,3 @@ void BiconnectedComponents::createAuxiliaryGraph(
 		Graph& auxiliaryGraph,
 		device_vector<std::pair<int, int> >& mapping) const {}
 
-int main() {
-	return 0;
-}

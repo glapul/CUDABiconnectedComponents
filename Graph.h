@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include <cuda.h>
 #include <thrust/host_vector.h>
@@ -20,3 +21,4 @@ struct Graph {
 	int vertexCount;
 	thrust::device_vector<Edge> edges;
 };
+#endif
