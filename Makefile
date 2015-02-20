@@ -1,6 +1,6 @@
-NVCC := /usr/local/cuda/bin/nvcc
+NVCC := /usr/local/cuda/bin/nvcc -arch=sm_20
 CXX := g++
-LINK := g++
+LINK := $(NVCC)
 
 HEADERS := $(wildcard src/*.h)
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/*.cu)
