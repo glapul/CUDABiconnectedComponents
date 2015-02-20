@@ -50,3 +50,36 @@ Graph generate_random_graph(int n, int m) {
 Graph generate_random_tree(int n) {
     return Graph(n, direct_edges(generate_random_undirected_edges(n, n - 1)));
 }
+
+bool validate_graph(const Graph & graph) {
+    thrust::host_vector edges = graph.edges;
+    set<int> seen_vertices;
+    for(int i = 0; i < edges.size();i++) {
+        Edge curr = edges[i];
+        ASSERT(curr.from >= 0 && curr.from < graph.vertexCount);
+        ASSERT(curr.to >= 0 && curr.to < graph.vertexCount);
+        ASSERT(curr.from != curr.to);
+        ASSERT(curr.rev >= 0  && curr.rev < edges.size());
+        Edge rev = edges[curr.rev];
+        ASSERT(rev.from == curr.to && curr.from == rev.to);
+        seen_vertices.insert(edges[i].from)
+    }
+    ASSERT(seen_vertices.size() == graph.vertexCount);
+    return true;
+}
+
+bool validate_connected_graph(const Graph & graph) {
+    ASSERT(validate_graph(graph));
+    FindJoin fu(graph.vertexCount);
+    int sccs = graph.vertexCount;
+    for(int i = 0; i < edges.size(); i++) {
+        int u = edges[i].from,
+            v = edges[i].to;
+        if(fu.find(u) != fu.find(v)) {
+            fu.join(u, v);
+            sccs--;
+        }
+    }
+    ASSERT(sccs == 1);
+    return true;
+}

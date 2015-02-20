@@ -1,20 +1,7 @@
 #include<bits/stdc++.h>
 #include "BiconnectedComponents.h"
 using namespace std;
-struct FindJoin {
-    vector<int> parent;
-    FindJoin(int n)
-        : parent(vector<int>(n)) {
-        for(int i = 0; i < parent.size(); i++)
-            parent[i] = i;
-    }
-    int find(int x) {
-        return x == parent[x] ? x : parent[x] = find(parent[x]);
-    }
-    void join(int x, int y) {
-        parent[find(x)] = find(y);
-    }
-};
+#include "helper.h"
 void BiconnectedComponents::computeConnectedComponents(
         const Graph & graph,
         device_vector<int> & components) {
