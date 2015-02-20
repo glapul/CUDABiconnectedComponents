@@ -1,8 +1,28 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 #include "../src/Graph.h"
 #include "../src/helper.h"
 using namespace std;
+
+// gives random graph with roughly m edges
 vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
+    const int possible = (n * (n - 1)) / 2;
+    assert(m <= possible);
+
+    srand(time(NULL));
+    vector<pair<int,int> > undirected_edges;
+
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if ((rand() % possible) < m) {
+                undirected_edges.push_back(make_pair(i, j));
+            }
+        }
+    }
+
+    return undirected_edges;
+}
+
+vector<pair<int,int> > generate_random_undirected_edges_connected(int n, int m) {
     assert(m >= n - 1);
     assert(m <= (n * (n - 1)) / 2);
 
@@ -45,8 +65,13 @@ thrust::host_vector<Edge> direct_edges(vector<pair<int,int> > undirected_edges) 
 Graph generate_random_graph(int n, int m) {
     return Graph(n, direct_edges(generate_random_undirected_edges(n, m)));
 }
+
+Graph generate_random_connected_graph(int n, int m) {
+    return Graph(n, direct_edges(generate_random_undirected_edges_connected(n, m)));
+}
+
 Graph generate_random_tree(int n) {
-    return Graph(n, direct_edges(generate_random_undirected_edges(n, n - 1)));
+    return Graph(n, direct_edges(generate_random_undirected_edges_connected(n, n - 1)));
 }
 
 bool validate_graph(const Graph & graph) {

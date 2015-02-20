@@ -2,8 +2,6 @@
 #define BICONNNECTED_COMPONENTS_H
 #include "Graph.h"
 
-using thrust::device_vector;
-
 class BiconnectedComponents {
 public:
     static void computeTreeFunctions(
