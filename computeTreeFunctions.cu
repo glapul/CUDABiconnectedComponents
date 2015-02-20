@@ -63,30 +63,84 @@ __global__ void _kernel_BFS(
         }
 }
 
-void BiconnectedComponents::BFS(
+int BiconnectedComponents::BFS(
         const Graph & graph,
         const device_vector<int> & extractedEdges,
         const device_vector<int> & edgeListStart,
         device_vector<int> & parent,
         device_vector<int> & distance) const {
 
-        parent = device_vector<int>(graph.vertexCount);
-        distance = device_vector<int>(graph.vertexCount, INF);
-        parent[0] = -1;
-        distance[0] = 0;
+    parent = device_vector<int>(graph.vertexCount);
+    distance = device_vector<int>(graph.vertexCount, INF);
+    parent[0] = -1;
+    distance[0] = 0;
 
-        device_vector<bool> finished(1, false);
+    device_vector<bool> finished(1, false);
 
-        for(int curr = 0; !finished[0]; curr++)
-            _kernel_BFS<<<gridDim, blockDim>>>(
-                    pointer(extractedEdges),
-                    pointer(edgeListStart),
-                    pointer(parent),
-                    pointer(distance),
-                    graph.vertexCount,
-                    curr);
+    dim3 gridDim((graph.vertexCount + BLOCK_SIZE - 1)/BLOCK_SIZE),
+         blockDim((BLOCK_SIZE));
+
+    for(int curr = 0; !finished[0]; curr++)
+        _kernel_BFS<<<gridDim, blockDim>>>(
+                pointer(extractedEdges),
+                pointer(edgeListStart),
+                pointer(parent),
+                pointer(distance),
+                pointer(finished),
+                graph.vertexCount,
+                curr);
+    return curr - 1;
 }
 
+void BiconnectedComponents::computeDescendantsCount(
+        const Graph & graph,
+        const device_vector<int> & extractedEdges,
+        const device_vector<int> & edgeListStart,
+        const device_vector<int> & parent,
+        const device_vector<int> & distance,
+        device_vector<int> & descendantsCount,
+        int maxDistance) const {
+
+    dim3 gridDim((graph.vertexCount + BLOCK_SIZE - 1)/BLOCK_SIZE),
+         blockDim((BLOCK_SIZE));
+    
+    descendantsCount = device_vector<int>(graph.vertexCount);
+    for(int curr = maxDistance; curr >= 0; curr--)
+            _kernel_computeDescendantsCount<<<gridDim, blockDim>>>(
+                pointer(extractedEdges),
+                pointer(edgeListStart),
+                pointer(parent),
+                pointer(distance),
+                pointer(descendantsCount),
+                graph.vertexCount,
+                curr);
+}
+
+void BiconnectedComponents::computePreorder(
+        const Graph & graph,
+        const device_vector<int> & extractedEdges,
+        const device_vector<int> & edgeListStart,
+        const device_vector<int> & parent,
+        const device_vector<int> & distance,
+        const device_vector<int> & descendantsCount,
+        device_vector<int> & preorder,
+        int maxDistance) const {
+
+    dim3 gridDim((graph.vertexCount + BLOCK_SIZE - 1)/BLOCK_SIZE),
+         blockDim((BLOCK_SIZE));
+    
+    preorder = device_vector<int>(graph.vertexCount);
+    for(int curr = 0; curr <= maxDistance; curr++)
+            _kernel_computeDescendantsCount<<<gridDim, blockDim>>>(
+                pointer(extractedEdges),
+                pointer(edgeListStart),
+                pointer(parent),
+                pointer(distance),
+                pointer(descendantsCount),
+                pointer(preorder),
+                graph.vertexCount,
+                curr);
+}
 
 void BiconnectedComponents::computeTreeFunctions(
         const Graph & graph,
