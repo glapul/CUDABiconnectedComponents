@@ -25,8 +25,6 @@ vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
     return undirected_edges;
 }
 
-#define FOREACH(i, c) for(__typeof((c).begin()) i = (c).begin(); i!=(c).end();i++)
-
 thrust::host_vector<Edge> direct_edges(vector<pair<int,int> > undirected_edges) {
 
     vector<pair<int,int> > directed = undirected_edges;
@@ -52,7 +50,7 @@ Graph generate_random_tree(int n) {
 }
 
 bool validate_graph(const Graph & graph) {
-    thrust::host_vector edges = graph.edges;
+    thrust::host_vector<Edge> edges = graph.edges;
     set<int> seen_vertices;
     for(int i = 0; i < edges.size();i++) {
         Edge curr = edges[i];
@@ -62,7 +60,7 @@ bool validate_graph(const Graph & graph) {
         ASSERT(curr.rev >= 0  && curr.rev < edges.size());
         Edge rev = edges[curr.rev];
         ASSERT(rev.from == curr.to && curr.from == rev.to);
-        seen_vertices.insert(edges[i].from)
+        seen_vertices.insert(edges[i].from);
     }
     ASSERT(seen_vertices.size() == graph.vertexCount);
     return true;
@@ -70,11 +68,12 @@ bool validate_graph(const Graph & graph) {
 
 bool validate_connected_graph(const Graph & graph) {
     ASSERT(validate_graph(graph));
-    FindJoin fu(graph.vertexCount);
+    FindJoin fu = FindJoin(graph.vertexCount);
     int sccs = graph.vertexCount;
+    thrust::host_vector<Edge> edges = graph.edges;
     for(int i = 0; i < edges.size(); i++) {
-        int u = edges[i].from,
-            v = edges[i].to;
+        int u = edges[i].from;
+        int v = edges[i].to;
         if(fu.find(u) != fu.find(v)) {
             fu.join(u, v);
             sccs--;
