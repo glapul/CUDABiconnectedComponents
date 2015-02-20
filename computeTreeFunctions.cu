@@ -44,6 +44,24 @@ void BiconnectedComponents::preprocessEdges(
 }
 
 /* BFS */
+__global__ void _kernel_BFS(
+        int * extractedEdges, 
+        int * edgeListStart, 
+        int * parent, 
+        int * distance, 
+        int vertexCount, 
+        int curr_level) {
+    
+    int id = threadIdx.x + blockIdx.x * blockDim.x;
+    if(id >= vertexCount || distance[id] != curr_level) 
+        return;
+
+    for(int i = edgeListStart[id], i < edgeListStart[id + 1]; i++)
+        if(distance[i] == INF) {
+            distance[i] = curr_level + 1;
+            parent[i] = id;
+        }
+}
 
 void BiconnectedComponents::BFS(
         const Graph & graph,
@@ -67,7 +85,6 @@ void BiconnectedComponents::BFS(
                     pointer(distance),
                     graph.vertexCount,
                     curr);
-
 }
 
 
