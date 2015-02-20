@@ -17,7 +17,7 @@ struct FindJoin {
 };
 void BiconnectedComponents::computeConnectedComponents(
         const Graph & graph,
-        device_vector<int> & components) const {
+        device_vector<int> & components) {
 
     FindJoin fu = FindJoin(graph.vertexCount);
     thrust::host_vector<Edge> host_edges = graph.edges;
