@@ -7,9 +7,11 @@ SOURCES := $(wildcard src/*.cpp) $(wildcard src/*.cu)
 OBJS := $(patsubst src/%, bin/%.o, $(SOURCES))
 
 bin/%.cpp.o: src/%.cpp $(HEADERS)
+	mkdir -p bin
 	$(CXX) -c $< -o $@
 
 bin/%.cu.o: src/%.cu $(HEADERS)
+	mkdir -p bin
 	$(NVCC) -c $< -o $@
 
 .PHONY: test
