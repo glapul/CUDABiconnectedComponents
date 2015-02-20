@@ -45,10 +45,11 @@ void BiconnectedComponents::preprocessEdges(
 
 /* BFS */
 __global__ void _kernel_BFS(
-        int * extractedEdges, 
+        int * edges, 
         int * edgeListStart, 
         int * parent, 
-        int * distance, 
+        int * distance,
+        bool * finished,
         int vertexCount, 
         int curr_level) {
     
@@ -57,9 +58,10 @@ __global__ void _kernel_BFS(
         return;
 
     for(int i = edgeListStart[id], i < edgeListStart[id + 1]; i++)
-        if(distance[i] == INF) {
-            distance[i] = curr_level + 1;
-            parent[i] = id;
+        if(distance[edges[i]] == INF) {
+            distance[edges[i]] = curr_level + 1;
+            parent[edges[i]] = id;
+            *finished = false;
         }
 }
 
@@ -80,7 +82,8 @@ int BiconnectedComponents::BFS(
     dim3 gridDim((graph.vertexCount + BLOCK_SIZE - 1)/BLOCK_SIZE),
          blockDim((BLOCK_SIZE));
 
-    for(int curr = 0; !finished[0]; curr++)
+    for(int curr = 0; !finished[0]; curr++) {
+        finished[0] = true;
         _kernel_BFS<<<gridDim, blockDim>>>(
                 pointer(extractedEdges),
                 pointer(edgeListStart),
@@ -89,9 +92,28 @@ int BiconnectedComponents::BFS(
                 pointer(finished),
                 graph.vertexCount,
                 curr);
+    }
     return curr - 1;
 }
-
+/* computeDescendantsCount */
+__global__ void _kernel_computeDescendantsCount(
+        int * edges, 
+        int * edgeListStart, 
+        int * parent, 
+        int * distance,
+        int * descendantsCount,
+        int vertexCount, 
+        int curr_level) {
+    
+    int id = threadIdx.x + blockIdx.x * blockDim.x;
+    if(id >= vertexCount || distance[id] != curr_level) 
+        return;
+    
+    descendantsCount[id] = 1;
+    for(int i = edgeListStart[id], i < edgeListStart[id + 1]; i++)
+        if(distance[edges[i]] == curr_level + 1 && parent[edges[i]] == id)
+            descendantsCount[id] += descendantsCount[edges[i]];
+}
 void BiconnectedComponents::computeDescendantsCount(
         const Graph & graph,
         const device_vector<int> & extractedEdges,
@@ -115,7 +137,27 @@ void BiconnectedComponents::computeDescendantsCount(
                 graph.vertexCount,
                 curr);
 }
-
+/*  compute Preorder */
+__global__ void _kernel_computePreorder(
+        int * edges, 
+        int * edgeListStart, 
+        int * parent, 
+        int * distance,
+        int * descendantsCount,
+        int * preorder,
+        int vertexCount, 
+        int curr_level) {
+    
+    int id = threadIdx.x + blockIdx.x * blockDim.x;
+    if(id >= vertexCount || distance[id] != curr_level) 
+        return;
+    int offset = preorder[id];
+    for(int i = edgeListStart[id], i < edgeListStart[id + 1]; i++)
+        if(distance[edges[i]] == curr_level + 1 && parent[edges[i]] == id) {
+            preorder[edges[i]] = offset;
+            offset += descendantsCount[edges[i]];
+        }
+}
 void BiconnectedComponents::computePreorder(
         const Graph & graph,
         const device_vector<int> & extractedEdges,
@@ -131,7 +173,7 @@ void BiconnectedComponents::computePreorder(
     
     preorder = device_vector<int>(graph.vertexCount);
     for(int curr = 0; curr <= maxDistance; curr++)
-            _kernel_computeDescendantsCount<<<gridDim, blockDim>>>(
+            _kernel_computePreorder<<<gridDim, blockDim>>>(
                 pointer(extractedEdges),
                 pointer(edgeListStart),
                 pointer(parent),
@@ -141,11 +183,124 @@ void BiconnectedComponents::computePreorder(
                 graph.vertexCount,
                 curr);
 }
+#define maxi(x, y) {if(y > x) x = y;}
+#define mini(x, y) {if(y < x) x = y;}
 
+/* compute Low and High */
+__global__ void _kernel_computeLowHigh(
+        int * edges, 
+        int * edgeListStart, 
+        int * parent, 
+        int * distance,
+        int * descendantsCount,
+        int * preorder,
+        int * low,
+        int * high,
+        int vertexCount, 
+        int curr_level) {
+    
+    int id = threadIdx.x + blockIdx.x * blockDim.x;
+    if(id >= vertexCount || distance[id] != curr_level) 
+        return;
+    low[id] = high[id] = preorder[id];
+    for(int i = edgeListStart[id], i < edgeListStart[id + 1]; i++) {
+        if(distance[edges[i]] == curr_level + 1 && parent[edges[i]] == id) {
+            mini(low[id], low[edges[i]]);
+            maxi(high[id], high[edges[i]]);
+        }
+        else {
+            mini(low[id], preorder[edges[i]]);
+            maxi(high[id], preorder[edges[i]]);
+        }
+    }
+}
+void BiconnectedComponents::computeLowHigh(
+        const Graph & graph,
+        const device_vector<int> & extractedEdges,
+        const device_vector<int> & edgeListStart,
+        const device_vector<int> & parent,
+        const device_vector<int> & distance,
+        const device_vector<int> & descendantsCount,
+        const device_vector<int> & preorder,
+        device_vector<int> & low,
+        device_vector<int> & high,
+        int maxDistance) const {
+
+    dim3 gridDim((graph.vertexCount + BLOCK_SIZE - 1)/BLOCK_SIZE),
+         blockDim((BLOCK_SIZE));
+    
+    low = device_vector<int>(graph.vertexCount);
+    high = device_vector<int>(graph.vertexCount);
+    for(int curr = maxDistance; curr >=0; curr--)
+            _kernel_computeLowHigh<<<gridDim, blockDim>>>(
+                pointer(extractedEdges),
+                pointer(edgeListStart),
+                pointer(parent),
+                pointer(distance),
+                pointer(descendantsCount),
+                pointer(preorder),
+                pointer(low),
+                pointer(high),
+                graph.vertexCount,
+                curr);
+}
 void BiconnectedComponents::computeTreeFunctions(
         const Graph & graph,
         device_vector<int> & preorder,
         device_vector<int> & descendantsCount,
         device_vector<int> & low,
         device_vector<int> & high,
-        device_vector<int> & parent) const {}
+        device_vector<int> & parent) const {
+
+    device_vector<int> extractedEdges,
+                       edgeListStart,
+                       parent,
+                       distance,
+                       descendantsCount,
+                       preorder,
+                       low, 
+                       high;
+
+    preprocessEdges(
+            graph,
+            extractedEdges,
+            edgeListStart);
+
+    int maxDistance = BFS(
+            graph,
+            extractedEdges,
+            edgeListStart,
+            parent,
+            distance);
+    
+    computeDescendantsCount(
+            graph,
+            extractedEdges,
+            edgeListStart,
+            parent,
+            distance,
+            descendantsCount,
+            maxDistance);
+
+    computePreorder(
+            graph,
+            extractedEdges,
+            edgeListStart,
+            parent,
+            distance,
+            descendantsCount,
+            preorder,
+            maxDistance);
+
+    computeLowHigh(
+            graph,
+            extractedEdges,
+            edgeListStart,
+            parent,
+            distance,
+            descendantsCount,
+            preorder,
+            low,
+            high,
+            maxDistance);
+}
