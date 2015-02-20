@@ -29,7 +29,8 @@ foo.cu tak:
     #endif
 
 2) Na końcu należy odkomentować odpowiednią linię w pliku config.h
-    (#define foo_IMPLEMENTED)
+
+    #define foo_IMPLEMENTED
 
 
 
@@ -39,7 +40,9 @@ Makefile nie tworzy pliku wykonywalnego.
 Takowe powstają dopiero przy "make test" - ta funkcjonalność działa w sposób następujący:
 
 1) kompiluje plik main.o w katalogu test
+
 2) linkuje go z implementacją klasy
+
 3) uruchamia binarkę
 
 Wobec tego, polecenie "make main.o" w katalogu test/ powinno kompilować maina, który odpala odpowiednie testy.
