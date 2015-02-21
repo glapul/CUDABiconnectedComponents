@@ -1,5 +1,4 @@
 #include <cstdio>
-
 void foo();
 
 int main() {

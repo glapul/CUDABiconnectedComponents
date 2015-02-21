@@ -6,7 +6,7 @@
 
 #include<vector>
 #include<iostream>
-#include "../helper.h"
+#include "../src/helper.h"
 using namespace std;
 
 

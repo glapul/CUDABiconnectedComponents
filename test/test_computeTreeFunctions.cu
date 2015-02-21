@@ -1,6 +1,6 @@
 #include "testlib.cu"
-#include "../BiconnectedComponents.cu"
-#include "../generator.cu"
+#include "../src/BiconnectedComponents.h"
+#include "generator.cu"
 
 class TestPreprocessEdges : public Test {
     public:
@@ -43,8 +43,7 @@ class TestPreprocessEdges : public Test {
     }
 };
 
-
-int main() {
+void test_preprocessEdges() {
     TestSuite preprocessEdgesTestSuite = TestSuite("preprocessEdges tests");
     preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("one-vertex tree", generate_random_tree(1)));
     preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("two-vertex tree", generate_random_tree(2)));
@@ -54,12 +53,14 @@ int main() {
     preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("100-vertex tree", generate_random_tree(100)));
     preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("1000-vertex tree", generate_random_tree(1000)));
     preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("10000-vertex tree", generate_random_tree(10000)));
-    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("four-vertex graph", generate_random_graph(4, 6)));
-    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("ten-vertex graph", generate_random_graph(10, 25)));
-    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("100-vertex graph", generate_random_graph(100, 3000)));
-    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("1000-vertex graph", generate_random_graph(1000, 3000)));
-    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("10000-vertex graph", generate_random_graph(10000, 20000)));
+    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("four-vertex graph", generate_random_connected_graph(4, 6)));
+    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("ten-vertex graph", generate_random_connected_graph(10, 25)));
+    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("100-vertex graph", generate_random_connected_graph(100, 3000)));
+    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("1000-vertex graph", generate_random_connected_graph(1000, 3000)));
+    preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("10000-vertex graph", generate_random_connected_graph(10000, 20000)));
     /*preprocessEdgesTestSuite.addTest(new TestPreprocessEdges("100000-vertex tree", generate_random_tree(100000)));*/
     preprocessEdgesTestSuite.play();
-    return 0;
+}
+int main() {
+    test_preprocessEdges();
 }
