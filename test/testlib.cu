@@ -4,8 +4,7 @@
 */
 #pragma once
 
-#include<vector>
-#include<iostream>
+#include <bits/stdc++.h>
 #include "../src/helper.h"
 using namespace std;
 
@@ -81,4 +80,5 @@ void standard_report(string name, TestResult res) {
     if(res == NOT_CHECKED) msg += (string)KWHT + "NOT CHECKED ";
     msg += name;
     cerr << msg << endl;
+    fflush(stdout);
 }
