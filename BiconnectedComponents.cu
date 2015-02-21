@@ -1,3 +1,4 @@
+#pragma once
 #include "Graph.h"
 #include "BiconnectedComponents.h"
 

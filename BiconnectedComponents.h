@@ -3,6 +3,7 @@
 #include "Graph.h"
 
 using thrust::device_vector;
+using thrust::host_vector;
 
 class BiconnectedComponents {
 public:
