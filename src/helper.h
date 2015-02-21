@@ -12,12 +12,12 @@ using namespace std;
 #else
 #define ASSERT(x) assert(x); //for debugging
 #endif
-ostream & operator<<(ostream & stream, Edge & e) {
+inline ostream & operator<<(ostream & stream, Edge & e) {
     stream << "{ from = " << e.from << " to = " << e.to << " rev = " << e.rev << " }\n";
     return stream;
 }
 template<typename T>
-ostream & operator<<(ostream & stream, thrust::device_vector<T> & vec) {
+inline ostream & operator<<(ostream & stream, thrust::device_vector<T> & vec) {
     thrust::host_vector<T> local = vec;
     stream << "SIZE = " <<local.size() << "\n";
     FOREACH(i, local)
@@ -26,14 +26,14 @@ ostream & operator<<(ostream & stream, thrust::device_vector<T> & vec) {
     return stream;
 }
 template<typename T>
-ostream & operator<<(ostream & stream, thrust::host_vector<T> & local) {
+inline ostream & operator<<(ostream & stream, thrust::host_vector<T> & local) {
     stream << "SIZE = " <<local.size() << "\n";
     FOREACH(i, local)
         stream << *i << " ";
     stream << "\n";
     return stream;
 }
-ostream & operator<<(ostream & stream, Graph & g) {
+inline ostream & operator<<(ostream & stream, Graph & g) {
     stream << "vertexCount = " << g.vertexCount << " edges :" << endl;
     stream << g.edges;
     return stream;

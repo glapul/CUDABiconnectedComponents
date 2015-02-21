@@ -1,5 +1,15 @@
+<<<<<<< HEAD:computeTreeFunctions.cu
 #pragma once
 #include "BiconnectedComponents.h"
+=======
+#include "config.h"
+#ifdef computeTreeFunctions_IMPLEMENTED
+
+#include "BiconnectedComponents.h"
+#include "helper.h"
+using thrust::host_vector;
+using thrust::device_vector;
+>>>>>>> 8cfacb6b8c8b6d30e9b18813f9bdaec5e953dfda:src/computeTreeFunctions.cu
 const int BLOCK_SIZE = 1024,
           INF        = 1<<30;
 
@@ -297,3 +307,5 @@ void BiconnectedComponents::computeTreeFunctions(
             high,
             maxDistance);
 }
+
+#endif // IMPLEMENTED

@@ -1,3 +1,6 @@
+#include "config.h"
+#ifndef computeConnectedComponents_IMPLEMENTED
+
 #include<bits/stdc++.h>
 #include "BiconnectedComponents.h"
 using namespace std;
@@ -26,3 +29,5 @@ void BiconnectedComponents::computeConnectedComponents(
     }
     components = host_components;
 }
+
+#endif // IMPLEMENTED

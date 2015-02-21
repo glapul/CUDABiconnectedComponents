@@ -2,9 +2,6 @@
 #define BICONNNECTED_COMPONENTS_H
 #include "Graph.h"
 
-using thrust::device_vector;
-using thrust::host_vector;
-
 class BiconnectedComponents {
 public:
     static void computeTreeFunctions(
@@ -32,8 +29,8 @@ public:
 		const Graph& graph,
 		device_vector<int>& components);
 private:
-	BiconnectedComponents(); // private constuctor - all methods are static
-	~BiconnectedComponents();
+	BiconnectedComponents() {} // private constuctor - all methods are static
+	~BiconnectedComponents() {}
 
     static void preprocessEdges(
             const Graph & graph,
