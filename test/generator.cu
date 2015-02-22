@@ -87,7 +87,7 @@ bool validate_graph(const Graph & graph) {
         ASSERT(rev.from == curr.to && curr.from == rev.to);
         seen_vertices.insert(edges[i].from);
     }
-    ASSERT(seen_vertices.size() == graph.vertexCount);
+    ASSERT(graph.vertexCount == 1 || seen_vertices.size() == graph.vertexCount);
     return true;
 }
 

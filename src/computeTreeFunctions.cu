@@ -1,12 +1,9 @@
 #include "config.h"
 #ifdef computeTreeFunctions_IMPLEMENTED
-
 #include "BiconnectedComponents.h"
 #include "helper.h"
-using thrust::host_vector;
-using thrust::device_vector;
 const int BLOCK_SIZE = 1024,
-          INF        = 1 << 30;
+          INF        = 1<<30;
 
 /* edge preprocessing */
 __global__ void _kernel_extractEdges(

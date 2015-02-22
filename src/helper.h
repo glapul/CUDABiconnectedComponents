@@ -3,11 +3,15 @@
 #include "Graph.h"
 #include<iostream>
 #include<sstream>
+#include<cassert>
 using namespace std;
 #define FOREACH(i, c) for(__typeof((c).begin()) i = (c).begin(); i!=(c).end();i++)
 #define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
+#ifndef EBUG
 #define ASSERT(x) if(!(x)) return false;
-//#define ASSERT(x) assert(x); //for debugging
+#else
+#define ASSERT(x) assert(x); //for debugging
+#endif
 inline ostream & operator<<(ostream & stream, Edge & e) {
     stream << "{ from = " << e.from << " to = " << e.to << " rev = " << e.rev << " }\n";
     return stream;
