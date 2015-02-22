@@ -10,11 +10,19 @@ using thrust::host_vector;
 struct Edge {
 	int from, to;
 	int rev;
-    Edge() {}
-    Edge(int from, int to, int rev)
+    Edge() 
+	: from(0),
+	to(0),
+	rev(0) {}
+	
+    Edge(int from, int to, int rev = 0)
         : from(from), 
         to(to), 
         rev(rev) {}
+
+	bool is_zero() const {
+		return from == 0 && to == 0;
+	}
 };
 
 struct Graph {

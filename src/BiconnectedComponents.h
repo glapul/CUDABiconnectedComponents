@@ -14,12 +14,12 @@ public:
 
 	static void createAuxiliaryGraph(
 		const Graph& graph,
+		const device_vector<int>& parent,
 		const device_vector<int>& preorder,
 		const device_vector<int>& nd,
 		const device_vector<int>& low,
 		const device_vector<int>& high,
-		Graph& auxiliaryGraph,
-		device_vector<std::pair<int, int> >& mapping);
+		Graph& auxiliaryGraph);
 
 	static void computeConnectedComponents(
 		const Graph& graph,
