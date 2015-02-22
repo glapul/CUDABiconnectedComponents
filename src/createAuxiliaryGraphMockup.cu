@@ -9,32 +9,31 @@
 
 void BiconnectedComponents::createAuxiliaryGraph(
 		const Graph & graph,
-		const device_vector<int> & preorder,
 		const device_vector<int> & parent,
+		const device_vector<int> & preorder,
 		const device_vector<int> & nd,
 		const device_vector<int> & low,
 		const device_vector<int> & high,
-		Graph & auxiliaryGraph,
-		device_vector<std::pair<int, int>> & mapping) {
+		Graph & auxiliaryGraph) {
 	
 	int edgeCount = graph.edgeCount();
 	host_vector<Edge> newEdges = host_vector<Edge>(edgeCount);
 	for (int i = 0; i < edgeCount; ++i) {
-		Edge & e = graph.edges[i];
+		const Edge & e = graph.edges[i];
 		// is e a tree edge?
 		bool down_tree = (e.from == parent[e.to]);
 		bool up_tree = (e.to == parent[e.from]);
 		if (!(down_tree || up_tree)) {
 			if (UNRELATED(parent[e.to], parent[e.from]))
-				newEdges[i] = Edge(from, to);
+				newEdges[i] = Edge(e.from, e.to);
 		}
 		if (down_tree) {
-			if (parent[from] >= 0 && JOINS(from, to))
-				newEdges[i] = Edge(from, to);
+			if (parent[e.from] >= 0 && JOINS(e.from, e.to))
+				newEdges[i] = Edge(e.from, e.to);
 		}
 		if (up_tree) {
-			if (parent[to] >= 0 && JOINS(to, from))
-				newEdges[i] = Edge(to, from);
+			if (parent[e.to] >= 0 && JOINS(e.to, e.from))
+				newEdges[i] = Edge(e.to, e.from);
 		}
 	}
 
