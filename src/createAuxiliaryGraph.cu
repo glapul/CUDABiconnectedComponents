@@ -6,7 +6,7 @@
 #include "Graph.h"
 
 #define UNRELATED(x,y) (preorder[x] + nd[x] <= preorder[y])
-#define JOINS(x,y) (preorder[x] != 1 && (low[y] < preorder[x] || high[y] >= preorder[x] + nd[x]))
+#define JOINS(x,y) (preorder[x] != 0 && (low[y] < preorder[x] || high[y] >= preorder[x] + nd[x]))
 
 #define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
 #define ceilDiv(x, y) ((x) + (y) - 1) / (y)
