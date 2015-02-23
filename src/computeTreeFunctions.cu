@@ -207,13 +207,15 @@ __global__ void _kernel_computeLowHigh(
         return;
     low[id] = high[id] = preorder[id];
     for(int i = edgeListStart[id]; i < edgeListStart[id + 1]; i++) {
-        if(distance[edges[i]] == curr_level + 1 && parent[edges[i]] == id) {
+        if(parent[edges[i]] == id) {
             mini(low[id], low[edges[i]]);
             maxi(high[id], high[edges[i]]);
         }
         else {
-            mini(low[id], preorder[edges[i]]);
-            maxi(high[id], preorder[edges[i]]);
+            if(edges[i] != parent[id]) {
+                mini(low[id], preorder[edges[i]]);
+                maxi(high[id], preorder[edges[i]]);
+            }
         }
     }
 }
