@@ -21,8 +21,8 @@ test: $(OBJS)
 	$(LINK) test/main.o $(OBJS) -o bin/test
 	bin/test
 
-test_connectedComponents: test/test_connectedComponents.cu src/computeConnectedComponents.cu
-	$(NVCC) test/test_connectedComponents.cu src/computeConnectedComponents.cu -o test_connectedComponents.test
+test_connectedComponents: test/test_connectedComponents.cu src/computeConnectedComponents.cu src/computeTreeFunctions.cu
+	$(NVCC) test/test_connectedComponents.cu src/computeConnectedComponents.cu src/computeTreeFunctions.cu -o test_connectedComponents.test
 	./test_connectedComponents.test
 
 test_computeTreeFunctions: test/test_computeTreeFunctions.cu src/computeTreeFunctions.cu

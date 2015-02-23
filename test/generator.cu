@@ -1,3 +1,5 @@
+#pragma once
+
 #include <bits/stdc++.h>
 #include "../src/Graph.h"
 #include "../src/helper.h"
@@ -5,17 +7,24 @@ using namespace std;
 
 // gives random graph with roughly m edges
 vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
-    const int possible = (n * (n - 1)) / 2;
+    const long long possible = ((long long) n * (n - 1)) / 2;
     assert(m <= possible);
 
-    srand(time(NULL));
     vector<pair<int,int> > undirected_edges;
+    set<pair<int,int> > used_edges;
 
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < i; j++) {
-            if ((rand() % possible) < m) {
-                undirected_edges.push_back(make_pair(i, j));
-            }
+    int created = 0;
+    while (created < m) {
+        int u = rand() % n;
+        int v = rand() % n;
+        if (u > v) {
+            swap(u, v);
+        }
+        pair<int, int> new_edge = make_pair(u, v);
+        if (used_edges.find(new_edge) == used_edges.end()) {
+            used_edges.insert(new_edge);
+            undirected_edges.push_back(new_edge);
+            created++;
         }
     }
 
@@ -26,7 +35,6 @@ vector<pair<int,int> > generate_random_undirected_edges_connected(int n, int m) 
     assert(m >= n - 1);
     assert(m <= (n * (n - 1)) / 2);
 
-    srand(time(NULL));
     vector<vector<bool> > used(n, vector<bool>(n));
     vector<pair<int,int> > undirected_edges;
     for(int i = 1; i < n; i++) {
