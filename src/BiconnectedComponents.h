@@ -1,5 +1,5 @@
-#ifndef BICONNNECTED_COMPONENTS_H
-#define BICONNNECTED_COMPONENTS_H
+#pragma once
+
 #include "Graph.h"
 
 class BiconnectedComponents {
@@ -80,5 +80,6 @@ private:
             device_vector<int> & low,
             device_vector<int> & high,
             int maxDistance);
+
+    friend class TestConnectedComponents;
 };
-#endif

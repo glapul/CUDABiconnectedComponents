@@ -21,22 +21,17 @@ void initParents(int* parent, int n) {
 }
 
 __global__
-void hooking(const Edge* edges, int* parent, bool* marked, bool* change, int ed, int mode) {
+void hooking(const Edge* edges, int* parent, bool* change, int ed, int mode) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
-    if (i < ed && !marked[i]) {
+    if (i < ed) {
         int u = parent[edges[i].from];
         int v = parent[edges[i].to];
         if (u != v) {
             int max = v * (v > u) + u * (u >= v);
             int min = v * (v < u) + u * (u <= v);
-            if (mode == 0) {
-                parent[min] = max;
-            } else {
-                parent[max] = min;
-            }
+            parent[mode * max + (1 - mode) * min] = mode * min + (1 - mode) * max;
+            // parent[max] = min;
             *change = true;
-        } else {
-            marked[i] = true;
         }
     }
 }
@@ -58,9 +53,9 @@ void BiconnectedComponents::computeConnectedComponents(
     int vert = graph.vertexCount;
     int ed = graph.edgeCount();
 
-    device_vector<int> parent(vert);
+    components = device_vector<int>(vert);
     initParents<<<ceilDiv(vert, NUM_THREADS), NUM_THREADS>>>(
-        pointer(parent),
+        pointer(components),
         vert);
     cudaDeviceSynchronize();
 
@@ -75,8 +70,7 @@ void BiconnectedComponents::computeConnectedComponents(
 
         hooking<<<ceilDiv(ed, NUM_THREADS), NUM_THREADS>>>(
             pointer(graph.edges),
-            pointer(parent),
-            pointer(marked),
+            pointer(components),
             pointer(change),
             ed,
             mode);
@@ -87,13 +81,12 @@ void BiconnectedComponents::computeConnectedComponents(
             jumpChange[0] = false;
 
             jumping<<<ceilDiv(vert, NUM_THREADS), NUM_THREADS>>>(
-                pointer(parent),
+                pointer(components),
                 pointer(jumpChange),
                 vert);
+            cudaDeviceSynchronize();
         }
     }
-
-    components = parent;
 }
 
 #endif

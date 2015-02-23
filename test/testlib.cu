@@ -33,6 +33,7 @@ using namespace std;
 enum TestResult {PASS, FAIL, INVALID, NOT_CHECKED};
 class Test {
 public:
+    virtual ~Test() {}
     virtual bool play()   = 0; //return 1 if test passed
     virtual void report() = 0;
 };
