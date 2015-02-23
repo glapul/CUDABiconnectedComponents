@@ -1,6 +1,3 @@
-#include <cstdio>
-#include <iostream>
-using namespace std;
 #include "config.h"
 #ifdef extendRelation_IMPLEMENTED
 
@@ -42,8 +39,6 @@ void BiconnectedComponents::extendRelation(
 	int edgeCount = graph.edgeCount();
 	components = device_vector<int>(edgeCount);
 	
-	printf("no witam, mamy %d krawedzie\n", edgeCount);
-	cout << "preordery: " << preorder[0] << " oraz " << preorder[1] << endl;
 	edgeKernel<<<ceilDiv(edgeCount, NUM_THREADS), NUM_THREADS>>>(
             pointer(graph.edges),
 			edgeCount,

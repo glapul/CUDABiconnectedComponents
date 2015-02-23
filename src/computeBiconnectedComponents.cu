@@ -1,4 +1,3 @@
-#include <cstdio>
 
 #include "BiconnectedComponents.h"
 #include "Graph.h"
@@ -14,7 +13,6 @@ void BiconnectedComponents::computeBiconnectedComponents(
     device_vector<int> nd;
     device_vector<int> partial;
     Graph auxiliaryGraph(0);
-    printf("jeb 1\n");
 
     computeTreeFunctions(
             graph,
@@ -23,7 +21,6 @@ void BiconnectedComponents::computeBiconnectedComponents(
             low,
             high,
             parent);
-    printf("jeb 2\n");
     createAuxiliaryGraph(
             graph,
             parent,
@@ -32,16 +29,13 @@ void BiconnectedComponents::computeBiconnectedComponents(
             low,
             high,
             auxiliaryGraph);
-    printf("jeb 3\n");
     computeConnectedComponents(
             auxiliaryGraph,
             partial);
-    printf("jeb 4\n");
     extendRelation(
             graph,
             preorder,
             partial,
             components);
-    printf("jeb 5\n");
     // wtf have I just written
 }
