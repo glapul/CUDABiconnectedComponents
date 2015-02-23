@@ -128,6 +128,6 @@ public:
     RandomGraphGenerator(int n, int m)
         :n(n), m(m) {}
     Graph generate() {
-        return generate_random_graph(n, m);
+        return generate_random_connected_graph(n, m);
     }
 };
