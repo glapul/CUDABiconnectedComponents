@@ -4,6 +4,7 @@
 #include<iostream>
 #include<sstream>
 #include<cassert>
+#include<vector>
 using namespace std;
 #define FOREACH(i, c) for(__typeof((c).begin()) i = (c).begin(); i!=(c).end();i++)
 #define pointer(x) (thrust::raw_pointer_cast(& ((x) [0])))
@@ -33,9 +34,22 @@ inline ostream & operator<<(ostream & stream, thrust::host_vector<T> & local) {
     stream << "\n";
     return stream;
 }
+template<typename T>
+inline ostream & operator<<(ostream & stream, vector<T> & local) {
+    stream << "SIZE = " <<local.size() << "\n";
+    FOREACH(i, local)
+        stream << *i << " ";
+    stream << "\n";
+    return stream;
+}
 inline ostream & operator<<(ostream & stream, Graph & g) {
     stream << "vertexCount = " << g.vertexCount << " edges :" << endl;
     stream << g.edges;
+    return stream;
+}
+template<typename T>
+inline ostream & operator<<(ostream & stream, pair<T,T> p) {
+    stream << "( "<<p.first <<" , " << p.second << ")\n";
     return stream;
 }
 
