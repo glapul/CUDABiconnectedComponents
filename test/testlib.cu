@@ -84,14 +84,14 @@ void standard_report(string name, TestResult res) {
     fflush(stdout);
 }
 
-void time_report(string name, TestResult res, double dur) {
+void time_report(string name, TestResult res, double dur1, double dur2) {
     string msg = "";
     if(res == PASS) msg += (string)KGRN + (string)"PASSED ";
     if(res == FAIL) msg += (string)KRED + "FAILED ";
     if(res == INVALID) msg += (string)KYEL + "INVALID ";
     if(res == NOT_CHECKED) msg += (string)KWHT + "NOT CHECKED ";
     msg += name;
-    cerr << msg  << " time : " << dur <<"s"<< endl;
+    cerr << msg  << " parallel time : " << dur1 << "s, serial time : " << dur2 <<"s"<< endl;
     fflush(stdout);
 }
 

@@ -9,7 +9,7 @@ class TestBiconnectedComponents : public Test {
         string name;
         GraphGenerator * generator;
         TestResult res;
-        double duration;
+        double duration_par, duration_ser;
 
         bool compareOutputs(
                 const host_vector<int> & parallelComponents,
@@ -39,16 +39,23 @@ class TestBiconnectedComponents : public Test {
 
             device_vector<int> parallelBCCs;
 
-            timestamp_t beg = get_timestamp();
+            timestamp_t beg_par = get_timestamp();
 
             BiconnectedComponents::computeBiconnectedComponents(g, parallelBCCs);
 
-            timestamp_t end = get_timestamp();
-            duration = compare_timestamps(beg, end);
+            timestamp_t end_par = get_timestamp();
+            duration_par = compare_timestamps(beg_par, end_par);
 
             host_vector<int> host_parallelBCCs = parallelBCCs;
+            host_vector<Edge> host_edges = g.edges;
 
-            vector<int> serialBCCs = serialBiconnectedComponents(g);
+            timestamp_t beg_ser = get_timestamp();
+
+            vector<int> serialBCCs = serialBiconnectedComponents(g, host_edges);
+
+            timestamp_t end_ser = get_timestamp();
+            duration_ser = compare_timestamps(beg_ser, end_ser);
+            
 
             CHECK(compareOutputs(host_parallelBCCs, serialBCCs));
 
@@ -56,17 +63,17 @@ class TestBiconnectedComponents : public Test {
             return true;
         }
         void report() {
-            time_report(name, res, duration);
+            time_report(name, res, duration_par, duration_ser);
         }
 };
 
 void run_tests() {
     TestSuite t("BiconnectedComponents tests");
-    srand(1410);
-    for(int i = 0; i < 10; i++)
+    srand(1488);
+    for(int i = 0; i < 5; i++)
         t.addTest(new TestBiconnectedComponents(
                     "test graph",
-                    new RandomGraphGeneratorMemoryEfficient(7+i, 10+i)));
+                    new RandomGraphGeneratorMemoryEfficient(1000000, 20000000)));
     /*t.addTest(new TestBiconnectedComponents(*/
     /*"10-vertex 20-edge graph",*/
     /*new RandomGraphGenerator(10, 20)));*/

@@ -33,7 +33,8 @@ vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
 
 vector<pair<int,int> > generate_random_undirected_edges_connected(int n, int m) {
     assert(m >= n - 1);
-    assert(m <= (n * (n - 1)) / 2);
+    const long long possible = ((long long) n * (n - 1)) / 2;
+    assert(m <= possible);
 
     vector<vector<bool> > used(n, vector<bool>(n));
     vector<pair<int,int> > undirected_edges;
@@ -61,7 +62,8 @@ pair<int,int> random_undirected_edge(int n) {
 }
 vector<pair<int,int> > generate_random_undirected_edges_connected_memory_efficient(int n, int m) {
     assert(m >= n - 1);
-    assert( 2 * m <= (n * (n - 1)) / 2);
+    const long long possible = ((long long) n * (n - 1)) / 2;
+    assert(m <= possible);
 
     set<pair<int,int> > used;
     vector<pair<int,int> > undirected_edges;
@@ -108,7 +110,7 @@ Graph generate_random_connected_graph(int n, int m) {
 }
 Graph generate_random_connected_graph_memory_efficient(int n, int m) {
     Graph g =  Graph(n, direct_edges(generate_random_undirected_edges_connected_memory_efficient(n, m)));
-    cout << g;
+    //cout << g;
     return g;
 }
 

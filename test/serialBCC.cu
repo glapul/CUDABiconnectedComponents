@@ -69,9 +69,8 @@ namespace serialBCC {
     }
 };
 
-vector<int> serialBiconnectedComponents(const Graph & g) {
+vector<int> serialBiconnectedComponents(const Graph & g, host_vector<Edge> & host_edges) {
     serialBCC::N = g.vertexCount;
-    host_vector<Edge> host_edges = g.edges;
     vector<serialBCC::_Edge * > pointers(host_edges.size());
 
     for(int i = 0; i < (int) host_edges.size(); i++) {
