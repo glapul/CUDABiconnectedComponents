@@ -4,8 +4,8 @@
 #include "BiconnectedComponents.h"
 #include "Graph.h"
 
-#define UNRELATED(x,y) (x >= 0 && y >= 0 && preorder[x] + nd[x] <= preorder[y])
-#define JOINS(x,y) (low[y] < preorder[x] || high[y] >= preorder[x] + nd[x])
+#define UNRELATED(x,y) (preorder[x] + nd[x] <= preorder[y])
+#define JOINS(x,y) (preorder[x] != 1 && (low[y] < preorder[x] || high[y] >= preorder[x] + nd[x]))
 
 void BiconnectedComponents::createAuxiliaryGraph(
 		const Graph & graph,
@@ -17,38 +17,50 @@ void BiconnectedComponents::createAuxiliaryGraph(
 		Graph & auxiliaryGraph) {
 	
 	int edgeCount = graph.edgeCount();
-	host_vector<Edge> newEdges = host_vector<Edge>(edgeCount);
+	host_vector<int> active = host_vector<int>(edgeCount + 1);
 	for (int i = 0; i < edgeCount; ++i) {
 		const Edge & e = graph.edges[i];
 		// is e a tree edge?
-		bool down_tree = (e.from == parent[e.to]);
-		bool up_tree = (e.to == parent[e.from]);
-		if (!(down_tree || up_tree)) {
-			if (UNRELATED(parent[e.to], parent[e.from]))
-				newEdges[i] = Edge(e.from, e.to);
+		int lower, upper;
+		if (preorder[e.to] < preorder[e.from]) {
+			upper = e.to;
+			lower = e.from;
 		}
-		if (down_tree) {
-			if (parent[e.from] >= 0 && JOINS(e.from, e.to))
-				newEdges[i] = Edge(e.from, e.to);
+		else {
+			upper = e.from;
+			lower = e.to;
 		}
-		if (up_tree) {
-			if (parent[e.to] >= 0 && JOINS(e.to, e.from))
-				newEdges[i] = Edge(e.to, e.from);
+		if (parent[lower] == upper) {
+			// e is a tree edge
+			// upper -> lower
+			if (JOINS(upper, lower))
+				active[i+1] = 1;
+			else
+				active[i+1] = 0;
+		}
+		else {
+			// e isn't a tree edge
+			if (UNRELATED(upper, lower))
+				active[i+1] = 1; // +1 is important!
+			else
+				active[i+1] = 0;
 		}
 	}
 
-	int counter = 0;
+	// prefsum
+	active[0] = 0;
+	for (int i = 1; i <= edgeCount; ++i)
+		active[i] += active[i-1];
+
+	int newEdgeCount = active[edgeCount];
+	host_vector<Edge> newEdges = host_vector<Edge>(newEdgeCount);
+
 	for (int i = 0; i < edgeCount; ++i) {
-		if (!newEdges[i].is_zero())
-			++counter;
+		if (active[i+1] > active[i])
+			newEdges(active[i]) = graph.edges[i];
 	}
-	host_vector<Edge> result = host_vector<Edge>(counter);
-	int ptr = 0;
-	for (int i = 0; i < edgeCount; ++i) {
-		if (!newEdges[i].is_zero())
-			result[ptr++] = newEdges[i];
-	}
-	auxiliaryGraph = Graph(graph.vertexCount, result);
+	
+	auxiliaryGraph = Graph(graph.vertexCount, newEdges);
 }
 
 #endif // IMPLEMENTED
