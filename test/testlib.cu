@@ -1,4 +1,4 @@
-/* Miniframework do testowania 
+/* Miniframework do testowania
 
    Testy warto pisać by były małymi obiektami (czyt - nie mają zawierać grafów, a jedynie generatory grafów)
 */
@@ -6,6 +6,7 @@
 
 #include <bits/stdc++.h>
 #include "../src/helper.h"
+#include "timer.h"
 using namespace std;
 
 
@@ -43,7 +44,6 @@ class TestSuite {
     string name;
     vector<Test*> tests;
     public:
-    TestSuite(){} //delete?
 
     TestSuite(string name)
         :name(name) {}
@@ -83,3 +83,15 @@ void standard_report(string name, TestResult res) {
     cerr << msg << endl;
     fflush(stdout);
 }
+
+void time_report(string name, TestResult res, double dur) {
+    string msg = "";
+    if(res == PASS) msg += (string)KGRN + (string)"PASSED ";
+    if(res == FAIL) msg += (string)KRED + "FAILED ";
+    if(res == INVALID) msg += (string)KYEL + "INVALID ";
+    if(res == NOT_CHECKED) msg += (string)KWHT + "NOT CHECKED ";
+    msg += name;
+    cerr << msg  << " time : " << dur <<"s"<< endl;
+    fflush(stdout);
+}
+

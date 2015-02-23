@@ -77,9 +77,7 @@ void BiconnectedComponents::createAuxiliaryGraph(
 	cudaDeviceSynchronize();
 	// prefsum
 	active[0] = 0;
-	for (int i = 1; i <= edgeCount; ++i)
-		active[i] += active[i-1];
-	thrust::inclusive_scan(pointer(active), pointer(active) + edgeCount + 1, pointer(active));
+    thrust::inclusive_scan(active.begin(), active.end(), active.begin());
 
 	int newEdgeCount = active[edgeCount];
 	device_vector<Edge> newEdges = device_vector<Edge>(newEdgeCount);

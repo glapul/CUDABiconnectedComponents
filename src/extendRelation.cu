@@ -17,13 +17,15 @@ void edgeKernel(const Edge * edges, int edgeCount, const int * preorder,
 
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
 
-	register int w;
-	if (preorder[edges[i].to] < preorder[edges[i].from])
-		w = edges[i].from;
-	else
-		w = edges[i].to;
+    if (i < edgeCount) {
+    	register int w;
+	    if (preorder[edges[i].to] < preorder[edges[i].from])
+	    	w = edges[i].from;
+    	else
+	    	w = edges[i].to;
 
-	components[i] = partial[w];
+	    components[i] = partial[w];
+    }
 }
 
 } // namespace

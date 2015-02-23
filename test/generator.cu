@@ -115,3 +115,19 @@ bool validate_connected_graph(const Graph & graph) {
     ASSERT(sccs == 1);
     return true;
 }
+
+class GraphGenerator{
+    public:
+    virtual Graph generate() = 0;
+};
+
+class RandomGraphGenerator : public GraphGenerator {
+private:
+    int n, m;
+public:
+    RandomGraphGenerator(int n, int m)
+        :n(n), m(m) {}
+    Graph generate() {
+        return generate_random_connected_graph(n, m);
+    }
+};
