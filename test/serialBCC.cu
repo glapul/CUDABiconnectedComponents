@@ -57,6 +57,8 @@ namespace serialBCC {
     }
 
     void computeBCC(){
+        while(!_stack.empty())
+            _stack.pop();
         fill(artp, artp+N, false);                              /*A*/
         fill(visit, visit+N, false);
         _dfsTime = 1;
@@ -89,5 +91,9 @@ vector<int> serialBiconnectedComponents(const Graph & g) {
     vector<int> res(host_edges.size());
     for(int i = 0; i < (int)host_edges.size(); i++)
         res[i] = pointers[i] -> bcc;
+
+    for(int i = 0; i < serialBCC::N; i++)
+        serialBCC::adj[i].clear();
+
     return res;
 }
