@@ -39,7 +39,6 @@ public:
         device_vector<int> parallelBCCs;
 
         BiconnectedComponents::computeBiconnectedComponents(g, parallelBCCs);
-        printf("KURWA MA\n\n\n\n\n");
         host_vector<int> host_parallelBCCs = parallelBCCs;
 
         vector<int> serialBCCs = serialBiconnectedComponents(g);
