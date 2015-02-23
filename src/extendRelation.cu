@@ -1,3 +1,6 @@
+#include <cstdio>
+#include <iostream>
+using namespace std;
 #include "config.h"
 #ifdef extendRelation_IMPLEMENTED
 
@@ -17,13 +20,15 @@ void edgeKernel(const Edge * edges, int edgeCount, const int * preorder,
 
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
 
-	register int w;
-	if (preorder[edges[i].to] < preorder[edges[i].from])
-		w = edges[i].from;
-	else
-		w = edges[i].to;
+    if (i < edgeCount) {
+    	register int w;
+	    if (preorder[edges[i].to] < preorder[edges[i].from])
+	    	w = edges[i].from;
+    	else
+	    	w = edges[i].to;
 
-	components[i] = partial[w];
+	    components[i] = partial[w];
+    }
 }
 
 } // namespace
@@ -37,6 +42,8 @@ void BiconnectedComponents::extendRelation(
 	int edgeCount = graph.edgeCount();
 	components = device_vector<int>(edgeCount);
 	
+	printf("no witam, mamy %d krawedzie\n", edgeCount);
+	cout << "preordery: " << preorder[0] << " oraz " << preorder[1] << endl;
 	edgeKernel<<<ceilDiv(edgeCount, NUM_THREADS), NUM_THREADS>>>(
             pointer(graph.edges),
 			edgeCount,
