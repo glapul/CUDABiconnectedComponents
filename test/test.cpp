@@ -3,5 +3,5 @@ void foo();
 
 int main() {
   foo();
-  printf("nic kurwa nie działa\n");
+  printf("nic nie działa\n");
 }

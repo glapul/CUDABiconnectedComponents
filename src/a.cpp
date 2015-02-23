@@ -2,5 +2,5 @@
 using namespace std;
 
 void foo() {
-  cout << "Szczypać Jebkę!" << endl;
+  cout << "Hello, World!" << endl;
 }
