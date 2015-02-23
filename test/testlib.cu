@@ -82,3 +82,4 @@ void standard_report(string name, TestResult res) {
     cerr << msg << endl;
     fflush(stdout);
 }
+
