@@ -53,6 +53,35 @@ vector<pair<int,int> > generate_random_undirected_edges_connected(int n, int m) 
     return undirected_edges;
 }
 
+pair<int,int> random_undirected_edge(int n) {
+    assert( n >= 2);
+    int  p = rand() % (n-1);
+    int  q = p + 1 + rand() % (n - p - 1);
+    return make_pair(q, p);
+}
+vector<pair<int,int> > generate_random_undirected_edges_connected_memory_efficient(int n, int m) {
+    assert(m >= n - 1);
+    assert( 2 * m <= (n * (n - 1)) / 2);
+
+    set<pair<int,int> > used;
+    vector<pair<int,int> > undirected_edges;
+    for(int i = 1; i < n; i++) {
+        int parent = rand()%i;
+        undirected_edges.push_back(make_pair(i, parent));
+        used.insert(make_pair(i, parent));
+        used.insert(make_pair(parent, i));
+    }
+    m -= n - 1;
+    while(m--) {
+        pair<int,int> akt = random_undirected_edge(n);
+        while(used.find(akt) != used.end())
+            akt = random_undirected_edge(n);
+        used.insert(akt);
+        undirected_edges.push_back(akt);
+    }
+    return undirected_edges;
+}
+
 thrust::host_vector<Edge> direct_edges(vector<pair<int,int> > undirected_edges) {
 
     vector<pair<int,int> > directed = undirected_edges;
@@ -76,6 +105,11 @@ Graph generate_random_graph(int n, int m) {
 
 Graph generate_random_connected_graph(int n, int m) {
     return Graph(n, direct_edges(generate_random_undirected_edges_connected(n, m)));
+}
+Graph generate_random_connected_graph_memory_efficient(int n, int m) {
+    Graph g =  Graph(n, direct_edges(generate_random_undirected_edges_connected_memory_efficient(n, m)));
+    cout << g;
+    return g;
 }
 
 Graph generate_random_tree(int n) {
@@ -129,5 +163,15 @@ public:
         :n(n), m(m) {}
     Graph generate() {
         return generate_random_connected_graph(n, m);
+    }
+};
+class RandomGraphGeneratorMemoryEfficient : public GraphGenerator {
+private:
+    int n, m;
+public:
+    RandomGraphGeneratorMemoryEfficient(int n, int m)
+        :n(n), m(m) {}
+    Graph generate() {
+        return generate_random_connected_graph_memory_efficient(n, m);
     }
 };

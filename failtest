@@ -1,0 +1,23 @@
+vertexCount = 7 edges :
+SIZE = 20
+{ from = 0 to = 1 rev = 2 }
+ { from = 0 to = 5 rev = 15 }
+ { from = 1 to = 0 rev = 0 }
+ { from = 1 to = 2 rev = 6 }
+ { from = 1 to = 4 rev = 12 }
+ { from = 1 to = 6 rev = 17 }
+ { from = 2 to = 1 rev = 3 }
+ { from = 2 to = 3 rev = 8 }
+ { from = 3 to = 2 rev = 7 }
+ { from = 3 to = 4 rev = 13 }
+ { from = 3 to = 5 rev = 16 }
+ { from = 3 to = 6 rev = 18 }
+ { from = 4 to = 1 rev = 4 }
+ { from = 4 to = 3 rev = 9 }
+ { from = 4 to = 6 rev = 19 }
+ { from = 5 to = 0 rev = 1 }
+ { from = 5 to = 3 rev = 10 }
+ { from = 6 to = 1 rev = 5 }
+ { from = 6 to = 3 rev = 11 }
+ { from = 6 to = 4 rev = 14 }
+ 
