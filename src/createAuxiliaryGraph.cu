@@ -1,6 +1,3 @@
-#include <cstdio>
-#include <iostream>
-using namespace std;
 #include "config.h"
 #ifdef createAuxiliaryGraph_IMPLEMENTED
 
@@ -66,7 +63,6 @@ void BiconnectedComponents::createAuxiliaryGraph(
 	
 	int edgeCount = graph.edgeCount();
 	device_vector<int> active = device_vector<int>(edgeCount + 1);
-	printf("BIC 1\n");
 	initKernel<<<ceilDiv(edgeCount, NUM_THREADS), NUM_THREADS>>>(
 			pointer(active),
 			pointer(graph.edges),
@@ -80,22 +76,8 @@ void BiconnectedComponents::createAuxiliaryGraph(
 
 	cudaDeviceSynchronize();
 	// prefsum
-	printf("BIC 2\n");
 	active[0] = 0;
-	//for (int i = 1; i <= edgeCount; ++i)
-	//	active[i] += active[i-1];
-	for (int i = 0; i <= edgeCount; ++i) {
-        printf("active[%d]: %d\n", i, active[i]);
-        cout << active[i] << endl;
-    }
-	//host_vector<int> host_active = active;
-	//thrust::inclusive_scan(pointer(host_active), pointer(host_active) + edgeCount + 1, pointer(host_active));
     thrust::inclusive_scan(active.begin(), active.end(), active.begin());
-	printf("BIC 2a\n");
-	//active = host_active;
-	for (int i = 0; i <= edgeCount; ++i) {
-        printf("active[%d]: %d\n", i, active[i]);
-    }
 
 	int newEdgeCount = active[edgeCount];
 	device_vector<Edge> newEdges = device_vector<Edge>(newEdgeCount);
@@ -108,7 +90,6 @@ void BiconnectedComponents::createAuxiliaryGraph(
 			);
 	cudaDeviceSynchronize();
 	
-	printf("BIC 3\n");
 	auxiliaryGraph = Graph(graph.vertexCount, newEdges);
 }
 
