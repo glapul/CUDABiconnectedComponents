@@ -1,2 +1,5 @@
-main.o: test.cpp
-	g++ -c test.cpp -o main.o
+NVCC := /usr/local/cuda/bin/nvcc -arch=sm_20
+
+main.o: test_BiconnectedComponents.cu testlib.cu generator.cu serialBCC.cu
+	$(NVCC) -c $(DEBUG) test_BiconnectedComponents.cu -o main.o
+

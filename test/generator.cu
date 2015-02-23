@@ -117,10 +117,11 @@ bool validate_connected_graph(const Graph & graph) {
 }
 
 class GraphGenerator{
+    public:
     virtual Graph generate() = 0;
 };
 
-class RandomGraphGenerator : GraphGenerator {
+class RandomGraphGenerator : public GraphGenerator {
 private:
     int n, m;
 public:
