@@ -30,7 +30,6 @@ void hooking(const Edge* edges, int* parent, bool* change, int ed, int mode) {
             int max = v * (v > u) + u * (u >= v);
             int min = v * (v < u) + u * (u <= v);
             parent[mode * max + (1 - mode) * min] = mode * min + (1 - mode) * max;
-            // parent[max] = min;
             *change = true;
         }
     }
@@ -39,9 +38,9 @@ void hooking(const Edge* edges, int* parent, bool* change, int ed, int mode) {
 __global__
 void jumping(int* parent, bool* change, int vert) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
-    if (i < vert) {
-        *change |= (parent[i] != parent[parent[i]]);
+    if (i < vert && parent[i] != parent[parent[i]]) {
         parent[i] = parent[parent[i]];
+        *change = true;
     }
 }
 

@@ -21,7 +21,7 @@ vector<pair<int,int> > generate_random_undirected_edges(int n, int m) {
             swap(u, v);
         }
         pair<int, int> new_edge = make_pair(u, v);
-        if (used_edges.find(new_edge) == used_edges.end()) {
+        if (u != v && used_edges.find(new_edge) == used_edges.end()) {
             used_edges.insert(new_edge);
             undirected_edges.push_back(new_edge);
             created++;
