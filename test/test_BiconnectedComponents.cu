@@ -9,6 +9,7 @@ private:
     string name;
     GraphGenerator * generator;
     TestResult res;
+    double duration;
 
     bool compareOutputs(
             const host_vector<int> & parallelComponents,
@@ -38,7 +39,13 @@ public:
 
         device_vector<int> parallelBCCs;
 
+        timestamp_t beg = get_timestamp();
+
         BiconnectedComponents::computeBiconnectedComponents(g, parallelBCCs);
+
+        timestamp_t end = get_timestamp();
+        duration = compare_timestamps(beg, end);
+
         host_vector<int> host_parallelBCCs = parallelBCCs;
 
         vector<int> serialBCCs = serialBiconnectedComponents(g);
@@ -49,9 +56,10 @@ public:
         return true;
     }
     void report() {
-        standard_report(name, res);
+        time_report(name, res, duration);
     }
 };
+
 void run_tests() {
     TestSuite t("BiconnectedComponents tests");
     t.addTest(new TestBiconnectedComponents(
