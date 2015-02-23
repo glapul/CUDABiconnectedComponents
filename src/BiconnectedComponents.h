@@ -5,29 +5,36 @@
 class BiconnectedComponents {
 public:
     static void computeTreeFunctions(
-        const Graph & graph,
-        device_vector<int> & preorder,
-        device_vector<int> & descendantsCount,
-        device_vector<int> & low,
-        device_vector<int> & high,
-        device_vector<int> & parent);
+            const Graph & graph,
+            device_vector<int> & preorder,
+            device_vector<int> & descendantsCount,
+            device_vector<int> & low,
+            device_vector<int> & high,
+            device_vector<int> & parent);
 
 	static void createAuxiliaryGraph(
-		const Graph& graph,
-		const device_vector<int>& parent,
-		const device_vector<int>& preorder,
-		const device_vector<int>& nd,
-		const device_vector<int>& low,
-		const device_vector<int>& high,
-		Graph& auxiliaryGraph);
+		    const Graph & graph,
+	    	const device_vector<int> & parent,
+    		const device_vector<int> & preorder,
+		    const device_vector<int> & nd,
+		    const device_vector<int> & low,
+		    const device_vector<int> & high,
+		    Graph& auxiliaryGraph);
 
 	static void computeConnectedComponents(
-		const Graph& graph,
-		device_vector<int>& components);
+		    const Graph & graph,
+		    device_vector<int> & components);
+
+	static void extendRelation(
+	        const Graph & graph,
+	        const device_vector<int> & parent,
+	        const device_vector<int> & preorder,
+	        const device_vector<int> & partial,
+	        device_vector<int> & components);
 
 	static void computeBiconnectedComponents(
-		const Graph& graph,
-		device_vector<int>& components);
+		    const Graph & graph,
+		    device_vector<int> & components);
 private:
 	BiconnectedComponents() {} // private constuctor - all methods are static
 	~BiconnectedComponents() {}

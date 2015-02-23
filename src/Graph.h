@@ -29,7 +29,7 @@ struct Graph {
 	Graph(int vertexCount)
         : vertexCount(vertexCount) {}
         
-    Graph(int vertexCount, host_vector<Edge> edges)
+    Graph(int vertexCount, device_vector<Edge> edges)
         : vertexCount(vertexCount),
     	edges(edges) {}
 
