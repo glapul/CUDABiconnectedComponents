@@ -154,7 +154,7 @@ __global__ void _kernel_computePreorder(
     int id = threadIdx.x + blockIdx.x * blockDim.x;
     if(id >= vertexCount || distance[id] != curr_level)
         return;
-    int offset = preorder[id];
+    int offset = preorder[id] + 1;
     for(int i = edgeListStart[id]; i < edgeListStart[id + 1]; i++)
         if(distance[edges[i]] == curr_level + 1 && parent[edges[i]] == id) {
             preorder[edges[i]] = offset;
