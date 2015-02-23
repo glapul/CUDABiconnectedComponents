@@ -43,7 +43,6 @@ class TestSuite {
     string name;
     vector<Test*> tests;
     public:
-    TestSuite(){} //delete?
 
     TestSuite(string name)
         :name(name) {}
