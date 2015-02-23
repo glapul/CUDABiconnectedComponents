@@ -14,8 +14,8 @@
 const int NUM_THREADS = 1024;
 
 __global__
-void initKernel(int * active, Edge * edges, int edgeCount, int * parent,
-		int * preorder, int * nd, int * low, int * high) {
+void initKernel(int * active, const Edge * edges, int edgeCount, const int * parent,
+        const int * preorder, const int * nd, const int * low, const int * high) {
 
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
 	if (i < edgeCount) {
@@ -44,7 +44,7 @@ void initKernel(int * active, Edge * edges, int edgeCount, int * parent,
 }
 
 __global__
-void finalKernel(int * prefs, Edge * edges, int edgeCount, Edge * newEdges) {
+void finalKernel(const int * prefs, const Edge * edges, int edgeCount, Edge * newEdges) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
 	if (i < edgeCount) {
 		if (prefs[i+1] > prefs[i])
