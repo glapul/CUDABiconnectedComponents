@@ -34,7 +34,6 @@ void BiconnectedComponents::computeBiconnectedComponents(
             partial);
     extendRelation(
             graph,
-            parent,
             preorder,
             partial,
             components);

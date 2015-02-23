@@ -1,6 +1,6 @@
 #define computeSpanningTree_IMPLEMENTED
 #define computeTreeFunctions_IMPLEMENTED
-//#define computeLowHigh_IMPLEMENTED
 #define createAuxiliaryGraph_IMPLEMENTED
 #define computeConnectedComponents_IMPLEMENTED
-//#define computeBiconnectedComponents_IMPLEMENTED
+#define extendRelation_IMPLEMENTED
+#define computeBiconnectedComponents_IMPLEMENTED

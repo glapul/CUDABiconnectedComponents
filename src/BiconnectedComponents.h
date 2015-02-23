@@ -27,7 +27,6 @@ public:
 
 	static void extendRelation(
 	        const Graph & graph,
-	        const device_vector<int> & parent,
 	        const device_vector<int> & preorder,
 	        const device_vector<int> & partial,
 	        device_vector<int> & components);
